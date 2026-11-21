@@ -49,7 +49,8 @@ http.createServer((req, res) => {
   });
 }).listen(PORT, () => {
   console.log('EasyGuide running at http://localhost:' + PORT);
-  const openai = String(process.env.LLM_PROVIDER || '').toLowerCase() === 'openai';
-  const ready = openai ? (process.env.LLM_BASE_URL && process.env.LLM_API_KEY && process.env.LLM_MODEL) : process.env.ANTHROPIC_API_KEY;
-  if (!ready) console.log('Note: no API key configured (see .env.example). Quick help works, AI answers will not.');
+  const cfg = handler.getConfig();
+  const problem = handler.configError(cfg);
+  if (problem) console.log('Note: ' + problem + '\n      Quick help still works; AI answers will not until this is fixed.');
+  else console.log('AI provider: ' + cfg.name + ' | model: ' + cfg.model + ' | key found (' + cfg.keyVar + ')');
 });
