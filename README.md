@@ -1,10 +1,20 @@
 # EasyGuide
 
-EasyGuide helps older adults use apps and websites one step at a time. Ask a question by typing or speaking, or attach a screenshot to show what you see. Guides can be read aloud, viewed one step at a time, or printed.
+EasyGuide helps older adults use apps and websites with one instruction at a time. It offers guided AI answers, six built-in Quick Help guides, larger text controls, and read-aloud support.
+
+## Use the website
+
+1. Under **What are you using?**, pick an app such as Zoom, Teams, or Google Meet. You can also type a website address or app name.
+2. Under **What do you need help with?**, type a question, tap **Speak**, or choose **Add a screenshot or photo**. For example, ask “How do I share my screen in Google Meet?”
+3. Select **Help me**. Use **Next** or **Back** to move through the answer, **Read aloud** to hear it, or **See all steps** to view the full guide. Select **I’m still stuck** to ask a follow-up.
+
+Use **Quick help** for screen sharing, recording a class, muting participants, enlarging web text, checking a suspicious website, or opening a website. These guides work without an API key and are available offline after the site caches its files. The interface supports English, Bahasa Malaysia, Simplified Chinese, and Tamil. The built-in guide instructions are in English.
+
+Voice input, read-aloud voices, and app installation depend on the browser. Screenshot help needs a vision-capable provider. Avoid including passwords, bank details, or one-time codes in your questions or screenshots.
 
 ## Run locally
 
-You’ll need Node.js 18 or newer. The app has no npm dependencies to install.
+You’ll need Node.js 18 or newer. There are no npm dependencies to install.
 
 ```sh
 git clone https://github.com/Kroru-W/Guide-Assistance.git
@@ -12,50 +22,50 @@ cd Guide-Assistance/easyguide
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Try **Quick help** for built-in guides on tasks such as sharing your screen, recording a class, and checking a suspicious website. Quick Help works without an API key and is available offline after the app has loaded and cached its files.
+Open [http://localhost:3000](http://localhost:3000). You can try Quick Help immediately. AI answers require a provider key.
 
-### Enable AI answers
+## Configure AI answers
 
-For local development, create a file named `.env` inside `easyguide/`. Add your Anthropic API key and restart the dev server.
+### Gemini in the current local build
 
-```dotenv
-ANTHROPIC_API_KEY=
-```
-
-`CLAUDE_MODEL` overrides the default model. `RATE_LIMIT` sets the per-IP request limit per 10 minutes and defaults to 40. Keep `.env` out of Git. For a [custom chat provider](#custom-chat-provider), use its credentials instead.
-
-### Custom chat provider
-
-The backend also supports OpenAI-compatible Chat Completions endpoints. Use the URL, key, and model ID supplied by your provider.
+For the build that includes `easyguide/.env.example`, copy that template to `.env` inside `easyguide/`. Set a key from [Google AI Studio](https://aistudio.google.com/apikey), then restart `npm run dev`.
 
 ```dotenv
-LLM_PROVIDER=openai
-LLM_BASE_URL=https://your-provider.example/v1
-LLM_API_KEY=
-LLM_MODEL=
+LLM_PROVIDER=gemini
+GEMINI_API_KEY=
+GEMINI_MODEL=gemini-3.5-flash-lite
 ```
 
-Set `LLM_VISION=false` for a text-only model. The server then omits screenshot data and asks the model to have the user describe their screen.
+The current local setup uses Gemini 3.5 Flash-Lite for quicker answers. The Gemini backend defaults to `gemini-3.8-flash` when `GEMINI_MODEL` is unset. Gemini supports questions with screenshots or photos.
 
-## What you can do
+### ILMU Chat API
 
-- Get help with tools such as Zoom, Teams, Google Meet, PowerPoint, and Moodle.
-- Use English, Bahasa Malaysia, Chinese, or Tamil in the app interface and AI answers.
-- Enlarge the text, listen to steps, and ask a follow-up with **I’m still stuck**.
-- Use built-in guidance for common tasks or install the app from a compatible browser.
+In the same build, select ILMU and add an API key from the [ILMU Console](https://console.ilmu.ai/).
 
-The AI works from your question and any screenshot you attach. It cannot open the website for you. Voice input and installation depend on the browser. Avoid including passwords, bank details, or one-time codes in anything you send to an AI provider.
+```dotenv
+LLM_PROVIDER=ilmu
+ILMU_API_KEY=
+ILMU_MODEL=nemo-super
+```
+
+This ILMU setup handles text questions. If someone attaches an image, EasyGuide omits it from the provider request and asks the model to have them describe the screen.
+
+### Provider setup for GitHub main
+
+The current `main` branch uses the original provider setup. To enable AI there, create `easyguide/.env` with `ANTHROPIC_API_KEY`, then restart the server. To use a custom Chat Completions provider, set `LLM_PROVIDER=openai`, `LLM_BASE_URL`, `LLM_API_KEY`, and `LLM_MODEL`. Set `LLM_VISION=false` for text-only models.
+
+Keep `.env` out of Git. The browser sends requests to `/api/chat`, which uses the provider key on the server.
 
 ## Repository layout
 
 | File | Purpose |
 | --- | --- |
-| [`easyguide/index.html`](easyguide/index.html) | App interface, built-in guides, languages, voice, and screenshot handling |
+| [`easyguide/index.html`](easyguide/index.html) | Website interface, built-in guides, languages, voice, and screenshots |
 | [`easyguide/api/chat.js`](easyguide/api/chat.js) | Server-side AI requests and guide instructions |
-| [`easyguide/dev-server.js`](easyguide/dev-server.js) | Local web server used by `npm run dev` |
+| [`easyguide/dev-server.js`](easyguide/dev-server.js) | Local server started by `npm run dev` |
 | [`easyguide/manifest.json`](easyguide/manifest.json) and [`easyguide/sw.js`](easyguide/sw.js) | App installation and offline caching |
 | [`easyguide/vercel.json`](easyguide/vercel.json) | Vercel function configuration |
 
 ## Deploy to Vercel
 
-Import the GitHub repository in Vercel and choose `easyguide` as the project’s Root Directory. Add `ANTHROPIC_API_KEY` or the custom provider variables in the Vercel project’s environment settings, then deploy. Use the HTTPS deployment URL when testing on a phone.
+Set the project’s Root Directory to `easyguide`. Add the environment variables for the provider supported by the branch you’re deploying, then deploy. Use the HTTPS deployment URL to test on a phone.
