@@ -130,26 +130,45 @@ function toOpenAI(messages, vision) {
 }
 
 // ---- providers ----
+// LLM_PROVIDER = gemini | ilmu | openai | anthropic (default)
+// gemini and ilmu are shortcuts for the "openai" style API with their own variable names.
 function getConfig() {
-  const provider = String(process.env.LLM_PROVIDER || 'anthropic').toLowerCase();
-  if (provider === 'openai') {
+  const provider = String(process.env.LLM_PROVIDER || 'anthropic').toLowerCase().trim();
+  const vision = String(process.env.LLM_VISION || 'true').toLowerCase() !== 'false';
+  const trim = (u) => String(u || '').trim().replace(/\/+$/, '');
+  const val = (v) => String(v || '').trim().replace(/^["']|["']$/g, '');
+
+  if (provider === 'gemini') {
     return {
-      provider,
-      baseUrl: String(process.env.LLM_BASE_URL || '').replace(/\/+$/, ''),
-      key: process.env.LLM_API_KEY,
-      model: process.env.LLM_MODEL,
-      vision: String(process.env.LLM_VISION || 'true').toLowerCase() !== 'false'
+      provider: 'openai', name: 'gemini', keyVar: 'GEMINI_API_KEY', vision,
+      baseUrl: trim(process.env.GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com/v1beta/openai'),
+      key: val(process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY),
+      model: val(process.env.GEMINI_MODEL) || 'gemini-3.8-flash'
     };
   }
-  return { provider: 'anthropic', key: process.env.ANTHROPIC_API_KEY, model: process.env.CLAUDE_MODEL || 'claude-sonnet-5-5' };
+  if (provider === 'ilmu') {
+    return {
+      provider: 'openai', name: 'ilmu', keyVar: 'ILMU_API_KEY', vision,
+      baseUrl: trim(process.env.ILMU_BASE_URL || 'https://api.ilmu.ai/v1'),
+      key: val(process.env.ILMU_API_KEY),
+      model: val(process.env.ILMU_MODEL)
+    };
+  }
+  if (provider === 'openai') {
+    return {
+      provider: 'openai', name: 'openai', keyVar: 'LLM_API_KEY', vision,
+      baseUrl: trim(process.env.LLM_BASE_URL),
+      key: val(process.env.LLM_API_KEY),
+      model: val(process.env.LLM_MODEL)
+    };
+  }
+  return { provider: 'anthropic', name: 'anthropic', keyVar: 'ANTHROPIC_API_KEY', key: val(process.env.ANTHROPIC_API_KEY), model: process.env.CLAUDE_MODEL || 'claude-sonnet-5-5' };
 }
 
 function configError(cfg) {
-  if (cfg.provider === 'openai') {
-    if (!cfg.baseUrl || !cfg.key || !cfg.model) return 'Server is missing LLM_BASE_URL, LLM_API_KEY or LLM_MODEL.';
-  } else if (!cfg.key) {
-    return 'Server is missing ANTHROPIC_API_KEY.';
-  }
+  if (!cfg.key) return 'LLM_PROVIDER is "' + cfg.name + '" but ' + cfg.keyVar + ' is empty. Put your key in the .env file (same folder as dev-server.js), save it, and restart the server.';
+  if (cfg.provider === 'openai' && !cfg.baseUrl) return 'No base URL set for provider "' + cfg.name + '" (LLM_BASE_URL).';
+  if (!cfg.model) return 'No model name set for provider "' + cfg.name + '" (check the *_MODEL line in .env).';
   return null;
 }
 
@@ -160,7 +179,11 @@ async function callProvider(cfg, messages, signal) {
       method: 'POST',
       signal,
       headers: { Authorization: 'Bearer ' + cfg.key, 'content-type': 'application/json' },
-      body: JSON.stringify({ model: cfg.model, max_tokens: 1200, temperature: 0.3, messages: toOpenAI(messages, cfg.vision) })
+      body: JSON.stringify(Object.assign(
+        // Thinking models (e.g. Gemini) can spend part of the limit on reasoning, so allow plenty.
+        { model: cfg.model, max_tokens: Number(process.env.LLM_MAX_TOKENS || 4000), temperature: 0.3, messages: toOpenAI(messages, cfg.vision) },
+        process.env.LLM_REASONING_EFFORT ? { reasoning_effort: process.env.LLM_REASONING_EFFORT } : {}
+      ))
     });
     const data = await r.json().catch(() => null);
     if (!r.ok || !data) { console.error('LLM API error', r.status, JSON.stringify(data)); return null; }
@@ -191,7 +214,7 @@ module.exports = async function handler(req, res) {
 
   const cfg = getConfig();
   const missing = configError(cfg);
-  if (missing) return res.status(500).json({ error: missing });
+  if (missing) { console.error('[EasyGuide] ' + missing); return res.status(500).json({ error: missing }); }
 
   const body = req.body;
   if (!body || typeof body !== 'object' || !clip(body.question, 1500).trim()) {
@@ -224,3 +247,5 @@ module.exports = async function handler(req, res) {
 module.exports.buildMessages = buildMessages;
 module.exports.toOpenAI = toOpenAI;
 module.exports.SYSTEM = SYSTEM;
+module.exports.getConfig = getConfig;
+module.exports.configError = configError;
