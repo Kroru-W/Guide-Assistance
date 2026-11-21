@@ -1,0 +1,848 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EasyGuide – Step-by-step tech help</title>
+<meta name="description" content="Plain-language, step-by-step help for apps and websites.">
+<meta name="theme-color" content="#0B5CAD">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="EasyGuide">
+<style>
+:root{
+  --bg:#FAF8F4; --card:#fff; --ink:#1B1B1B; --muted:#444;
+  --brand:#0B5CAD; --brand-d:#084885; --green:#136C34;
+  --line:#CFC8BA; --warn-bg:#FFF1CC; --warn-line:#C98A00; --warn-ink:#4A2F00;
+  --tip-bg:#E6F2EA; --r:16px;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{font-size:20px;-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);line-height:1.5;
+  font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Noto Sans Tamil","Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+}
+button,input,select,textarea{font:inherit;color:inherit}
+
+/* Header uses fixed px so the text-size buttons never push it off screen */
+.top{background:var(--brand);color:#fff;position:sticky;top:0;z-index:20;padding:10px 14px;padding-top:calc(10px + env(safe-area-inset-top))}
+.bar{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:800;letter-spacing:.2px}
+.brand svg{width:34px;height:34px;flex:none}
+.ctrls{display:flex;align-items:center;gap:8px}
+.hbtn{min-width:48px;height:44px;border-radius:12px;border:2px solid #fff;background:transparent;color:#fff;font-size:18px;font-weight:800;cursor:pointer}
+.hbtn.big{font-size:22px}
+.hsel{height:44px;border-radius:12px;border:2px solid #fff;background:var(--brand-d);color:#fff;font-size:16px;padding:0 8px;max-width:150px}
+.hbtn:focus-visible,.hsel:focus-visible{outline:4px solid #FFB000;outline-offset:2px}
+
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 56px}
+.tagline{font-size:1.1rem;color:var(--muted);margin:18px 0 6px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:var(--r);padding:18px;margin:16px 0}
+.card h2{margin:0 0 12px;font-size:1.25rem}
+.banner{background:var(--warn-bg);border:2px solid var(--warn-line);color:var(--warn-ink);border-radius:12px;padding:10px 14px;margin:12px 0;font-weight:700}
+
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.chip{min-height:48px;padding:8px 18px;border-radius:999px;border:2px solid var(--line);background:#fff;cursor:pointer;font-weight:700}
+.chip[aria-checked="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
+
+.field{width:100%;border:2px solid #8C8575;border-radius:14px;padding:12px 14px;background:#fff;min-height:56px}
+textarea.field{resize:vertical;min-height:110px;line-height:1.4}
+.field:focus{outline:4px solid #FFB000;outline-offset:1px;border-color:var(--brand)}
+
+.btn{min-height:56px;padding:12px 20px;border-radius:14px;border:2px solid var(--brand);background:#fff;color:var(--brand);font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:10px;text-align:center}
+.btn.primary{background:var(--brand);color:#fff}
+.btn.huge{width:100%;min-height:64px;font-size:1.25rem;margin-top:14px}
+.btn.small{min-height:44px;padding:6px 14px}
+.btn:active{transform:scale(.99)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn:focus-visible,.chip:focus-visible,.qbtn:focus-visible,summary:focus-visible{outline:4px solid #FFB000;outline-offset:2px}
+.btn.listening{background:#B00020;border-color:#B00020;color:#fff}
+
+.tools{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.tools .btn{flex:1 1 220px}
+.hint{color:var(--muted);font-size:.9rem;margin:10px 0 0}
+.preview{display:flex;align-items:center;gap:14px;margin-top:12px;flex-wrap:wrap}
+.preview img{max-width:160px;max-height:120px;border-radius:10px;border:2px solid var(--line);object-fit:cover}
+
+.quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.qbtn{display:flex;align-items:center;gap:12px;min-height:64px;padding:10px 14px;border-radius:14px;border:2px solid var(--line);background:#fff;font-weight:700;text-align:left;cursor:pointer}
+.qbtn:hover{border-color:var(--brand)}
+.qicon{font-size:1.6rem;flex:none}
+
+.answer h2{font-size:1.4rem}
+.stepcard{background:#F2F7FC;border:3px solid var(--brand);border-radius:var(--r);padding:20px;margin:12px 0}
+.stepnum{font-weight:800;color:var(--brand-d);font-size:1rem;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.steptext{font-size:1.5rem;font-weight:700;line-height:1.4;margin:0}
+.dots{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.dots span{width:14px;height:14px;border-radius:50%;background:#C9D6E4}
+.dots span.done{background:var(--green)}
+.dots span.now{background:var(--brand);transform:scale(1.25)}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+.row .btn{flex:1 1 150px}
+.warn{background:var(--warn-bg);border:3px solid var(--warn-line);color:var(--warn-ink);border-radius:var(--r);padding:14px 16px;margin:12px 0}
+.warn p,.tip p,.askcard p{margin:4px 0 0}
+.tip{background:var(--tip-bg);border:2px solid var(--green);border-radius:var(--r);padding:14px 16px;margin:12px 0}
+.askcard{background:#F2F7FC;border:3px solid var(--brand);border-radius:var(--r);padding:16px;margin:12px 0;font-size:1.15rem}
+details{margin-top:14px}
+summary{cursor:pointer;font-weight:800;color:var(--brand);padding:8px 0}
+ol#steplist{padding-left:1.4rem}
+ol#steplist li{margin:8px 0}
+.privacy{color:var(--muted);font-size:.85rem;margin:20px 4px}
+
+#toast{position:fixed;left:12px;right:12px;bottom:calc(16px + env(safe-area-inset-bottom));max-width:620px;margin:0 auto;background:#222;color:#fff;border-radius:14px;padding:14px 18px;font-weight:700;opacity:0;pointer-events:none;transform:translateY(12px);transition:.25s;z-index:50}
+#toast.show{opacity:1;transform:none}
+
+.spin{width:1em;height:1em;border:3px solid currentColor;border-right-color:transparent;border-radius:50%;display:inline-block;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation-duration:2s}#toast{transition:none}}
+
+@media print{
+  .top,.no-print,#steps-area,#toast,.privacy{display:none!important}
+  body{background:#fff}
+  .card{border:none;padding:0;margin:0}
+  #all>summary{display:none}
+  .stepcard{display:none}
+  ol#steplist{font-size:1.1rem}
+}
+</style>
+</head>
+<body>
+
+<header class="top no-print">
+  <div class="bar">
+    <div class="brand">
+      <svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="11" fill="#fff"/><path d="M10 11h28a4 4 0 0 1 4 4v14a4 4 0 0 1-4 4H22l-8 7v-7h-4a4 4 0 0 1-4-4V15a4 4 0 0 1 4-4z" fill="#0B5CAD"/><path d="M16 22l5 5 11-10" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>EasyGuide</span>
+    </div>
+    <div class="ctrls">
+      <button class="hbtn" id="fs-down" type="button" data-i18n-aria="smaller" aria-label="Smaller text">A−</button>
+      <button class="hbtn big" id="fs-up" type="button" data-i18n-aria="bigger" aria-label="Bigger text">A+</button>
+      <select class="hsel" id="lang" data-i18n-aria="language" aria-label="Language">
+        <option value="en">English</option>
+        <option value="ms">Bahasa Malaysia</option>
+        <option value="zh">中文</option>
+        <option value="ta">தமிழ்</option>
+      </select>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <p class="tagline no-print" data-i18n="tagline">Step-by-step help for apps and websites</p>
+  <div id="net" class="banner no-print" role="status" hidden></div>
+  <button id="install" class="btn no-print" type="button" hidden></button>
+
+  <section class="card no-print" aria-labelledby="q1">
+    <h2 id="q1" data-i18n="q1">1. What are you using?</h2>
+    <div class="chips" id="chips" role="radiogroup" aria-labelledby="q1"></div>
+    <input id="site" class="field" type="text" inputmode="url" autocomplete="off" autocapitalize="none" spellcheck="false" data-i18n-ph="other_ph" data-i18n-aria="other_ph" placeholder="Website address or app name (optional)" aria-label="Website address or app name">
+  </section>
+
+  <section class="card no-print" id="ask-sec" aria-labelledby="q2">
+    <h2 id="q2" data-i18n="q2">2. What do you need help with?</h2>
+    <textarea id="ask" class="field" rows="3" maxlength="1500" data-i18n-aria="q2" aria-label="Your question" placeholder="Example: How do I share my screen in Zoom?"></textarea>
+    <div class="tools">
+      <button id="mic" class="btn" type="button"></button>
+      <button id="shot" class="btn" type="button">📷 <span data-i18n="shot">Add a screenshot or photo</span></button>
+      <input id="file" type="file" accept="image/*" hidden>
+    </div>
+    <p class="hint" data-i18n="shot_hint">Lost? Take a photo of your screen and I will point to the right button.</p>
+    <div id="preview" class="preview" hidden>
+      <img id="prev-img" alt="">
+      <button id="rm-img" class="btn small" type="button" data-i18n="remove">Remove</button>
+    </div>
+    <button id="go" class="btn primary huge" type="button"></button>
+  </section>
+
+  <section class="card no-print" aria-labelledby="qh" id="quick-sec">
+    <h2 id="qh" data-i18n="quick">Quick help</h2>
+    <div class="quick" id="quick"></div>
+  </section>
+
+  <section id="answer" class="card answer" hidden tabindex="-1">
+    <h2 id="ans-title"></h2>
+
+    <div id="warn" class="warn" role="note" hidden>
+      <strong>⚠️ <span data-i18n="warning">Be careful</span></strong>
+      <p id="warn-text"></p>
+    </div>
+
+    <div id="ask-card" class="askcard" hidden>
+      <strong data-i18n="clarify">I need to know a little more</strong>
+      <p id="ask-text"></p>
+    </div>
+
+    <div id="steps-area">
+      <div class="stepcard" aria-live="polite">
+        <div class="stepnum" id="stepnum"></div>
+        <p class="steptext" id="steptext"></p>
+        <div class="dots" id="dots" aria-hidden="true"></div>
+      </div>
+      <div class="row">
+        <button id="back" class="btn" type="button"></button>
+        <button id="next" class="btn primary" type="button"></button>
+      </div>
+      <div class="row">
+        <button id="read" class="btn" type="button"></button>
+      </div>
+    </div>
+
+    <div id="tip" class="tip" hidden>
+      <strong>💡 <span data-i18n="tip">Tip</span></strong>
+      <p id="tip-text"></p>
+    </div>
+    <p id="note" class="hint no-print" hidden></p>
+
+    <details id="all">
+      <summary data-i18n="allsteps">See all steps</summary>
+      <ol id="steplist"></ol>
+    </details>
+
+    <div class="row no-print">
+      <button id="stuck" class="btn" type="button"></button>
+      <button id="check" class="btn primary" type="button" hidden></button>
+      <button id="print" class="btn" type="button"></button>
+      <button id="again" class="btn" type="button"></button>
+    </div>
+  </section>
+
+  <p class="privacy no-print" data-i18n="privacy">Your question and screenshot are sent to an AI to answer you. Please do not share passwords, bank details or codes.</p>
+  <p class="privacy no-print" id="ios-hint" hidden></p>
+</main>
+
+<div id="toast" role="alert" aria-live="assertive"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- Text in 4 languages ---------- */
+  var I18N = {
+    en: {
+      tagline: 'Step-by-step help for apps and websites',
+      q1: '1. What are you using?', other_ph: 'Website address or app name (optional)',
+      q2: '2. What do you need help with?',
+      ask_ph: 'Example: How do I share my screen in Zoom?',
+      ask_ph2: 'Tell me what you see now, or add a new screenshot',
+      mic: 'Speak', mic_on: 'Listening… tap to stop',
+      shot: 'Add a screenshot or photo',
+      shot_hint: 'Lost? Take a photo of your screen and I will point to the right button.',
+      remove: 'Remove', help: 'Help me', working: 'Working on it…',
+      quick: 'Quick help', step_of: 'Step {n} of {t}',
+      back: 'Back', next: 'Next', done: 'Done', welldone: 'Well done! You did it. 🎉',
+      read: 'Read aloud', stop: 'Stop reading',
+      stuck: "I'm still stuck", again: 'Start over', print: 'Print',
+      allsteps: 'See all steps', tip: 'Tip', warning: 'Be careful',
+      privacy: 'Your question and screenshot are sent to an AI to answer you. Please do not share passwords, bank details or codes.',
+      offline: 'You are offline. Quick help still works.',
+      error: 'Sorry, something went wrong. Please try again.',
+      nomic: 'Voice typing is not available in this browser. Please type instead.',
+      micerr: 'I could not hear you. Please allow the microphone, or type instead.',
+      nospeak: 'Reading aloud is not available in this browser.',
+      needq: 'Please type or speak your question, or add a screenshot.',
+      imgerr: 'Sorry, I could not open that picture.',
+      builtin: 'Built-in guide. Your screen may look a little different. Add a screenshot and I will show you the exact button.',
+      check: 'Check on my screen', install: 'Install app',
+      ios: 'On iPhone: tap the Share button, then "Add to Home Screen".',
+      clarify: 'I need to know a little more',
+      site: 'A website', other: 'Phone / other',
+      smaller: 'Smaller text', bigger: 'Bigger text', language: 'Language'
+    },
+    ms: {
+      tagline: 'Panduan langkah demi langkah untuk aplikasi dan laman web',
+      q1: '1. Apa yang anda gunakan?', other_ph: 'Alamat laman web atau nama aplikasi (pilihan)',
+      q2: '2. Apa yang anda perlukan bantuan?',
+      ask_ph: 'Contoh: Bagaimana nak kongsi skrin dalam Zoom?',
+      ask_ph2: 'Beritahu saya apa yang anda nampak sekarang, atau tambah tangkapan skrin baru',
+      mic: 'Cakap', mic_on: 'Mendengar… ketik untuk berhenti',
+      shot: 'Tambah tangkapan skrin atau gambar',
+      shot_hint: 'Tersesat? Ambil gambar skrin anda dan saya akan tunjuk butang yang betul.',
+      remove: 'Buang', help: 'Tolong saya', working: 'Sedang memproses…',
+      quick: 'Bantuan pantas', step_of: 'Langkah {n} daripada {t}',
+      back: 'Kembali', next: 'Seterusnya', done: 'Siap', welldone: 'Tahniah! Anda berjaya. 🎉',
+      read: 'Baca dengan kuat', stop: 'Berhenti membaca',
+      stuck: 'Saya masih buntu', again: 'Mula semula', print: 'Cetak',
+      allsteps: 'Lihat semua langkah', tip: 'Petua', warning: 'Berhati-hati',
+      privacy: 'Soalan dan tangkapan skrin anda dihantar kepada AI untuk menjawab anda. Jangan kongsi kata laluan, butiran bank atau kod.',
+      offline: 'Anda luar talian. Bantuan pantas masih boleh digunakan.',
+      error: 'Maaf, ada masalah. Sila cuba lagi.',
+      nomic: 'Menaip dengan suara tidak tersedia pada pelayar ini. Sila taip.',
+      micerr: 'Saya tidak dapat mendengar anda. Sila benarkan mikrofon, atau taip.',
+      nospeak: 'Bacaan kuat tidak tersedia pada pelayar ini.',
+      needq: 'Sila taip atau sebut soalan anda, atau tambah tangkapan skrin.',
+      imgerr: 'Maaf, gambar itu tidak dapat dibuka.',
+      builtin: 'Panduan terbina dalam (dalam Bahasa Inggeris). Skrin anda mungkin sedikit berbeza. Tambah tangkapan skrin dan saya akan tunjuk butang yang tepat.',
+      check: 'Semak pada skrin saya', install: 'Pasang aplikasi',
+      ios: 'Pada iPhone: ketik butang Kongsi, kemudian "Add to Home Screen".',
+      clarify: 'Saya perlu tahu sedikit lagi',
+      site: 'Laman web', other: 'Telefon / lain-lain',
+      smaller: 'Tulisan lebih kecil', bigger: 'Tulisan lebih besar', language: 'Bahasa'
+    },
+    zh: {
+      tagline: '应用和网站的分步帮助',
+      q1: '1. 您在使用什么？', other_ph: '网站地址或应用名称（可选）',
+      q2: '2. 您需要什么帮助？',
+      ask_ph: '例如：Zoom 里怎么共享屏幕？',
+      ask_ph2: '告诉我您现在看到什么，或添加新的截图',
+      mic: '说话', mic_on: '正在听…点击停止',
+      shot: '添加截图或照片',
+      shot_hint: '迷路了？拍一张屏幕的照片，我来告诉您点哪个按钮。',
+      remove: '删除', help: '帮帮我', working: '正在处理…',
+      quick: '快速帮助', step_of: '第 {n} 步，共 {t} 步',
+      back: '上一步', next: '下一步', done: '完成', welldone: '太棒了！您做到了。🎉',
+      read: '朗读', stop: '停止朗读',
+      stuck: '我还是不会', again: '重新开始', print: '打印',
+      allsteps: '查看所有步骤', tip: '小提示', warning: '请小心',
+      privacy: '您的问题和截图会发送给 AI 来回答。请不要分享密码、银行信息或验证码。',
+      offline: '您已离线。快速帮助仍可使用。',
+      error: '抱歉，出了点问题。请再试一次。',
+      nomic: '此浏览器不支持语音输入，请直接打字。',
+      micerr: '我没有听到您的声音。请允许使用麦克风，或直接打字。',
+      nospeak: '此浏览器不支持朗读。',
+      needq: '请输入或说出您的问题，或添加截图。',
+      imgerr: '抱歉，无法打开这张图片。',
+      builtin: '内置指南（英文）。您的屏幕可能略有不同。添加截图，我会告诉您确切的按钮。',
+      check: '在我的屏幕上查看', install: '安装应用',
+      ios: 'iPhone：点击“分享”按钮，然后选择“添加到主屏幕”。',
+      clarify: '我还需要多了解一点',
+      site: '网站', other: '手机 / 其他',
+      smaller: '缩小文字', bigger: '放大文字', language: '语言'
+    },
+    ta: {
+      tagline: 'பயன்பாடுகள் மற்றும் இணையதளங்களுக்கான படிப்படியான உதவி',
+      q1: '1. நீங்கள் எதைப் பயன்படுத்துகிறீர்கள்?', other_ph: 'இணையதள முகவரி அல்லது செயலியின் பெயர் (விருப்பம்)',
+      q2: '2. உங்களுக்கு என்ன உதவி வேண்டும்?',
+      ask_ph: 'எடுத்துக்காட்டு: Zoom-இல் என் திரையை எப்படிப் பகிர்வது?',
+      ask_ph2: 'இப்போது நீங்கள் என்ன பார்க்கிறீர்கள் என்று சொல்லுங்கள், அல்லது புதிய ஸ்கிரீன்ஷாட்டைச் சேர்க்கவும்',
+      mic: 'பேசுங்கள்', mic_on: 'கேட்கிறது… நிறுத்த தட்டவும்',
+      shot: 'ஸ்கிரீன்ஷாட் அல்லது புகைப்படத்தைச் சேர்க்கவும்',
+      shot_hint: 'வழி தெரியவில்லையா? உங்கள் திரையைப் புகைப்படம் எடுங்கள்; சரியான பொத்தானைக் காட்டுகிறேன்.',
+      remove: 'நீக்கு', help: 'எனக்கு உதவுங்கள்', working: 'செயல்படுகிறது…',
+      quick: 'விரைவு உதவி', step_of: 'படி {n} / {t}',
+      back: 'பின்', next: 'அடுத்து', done: 'முடிந்தது', welldone: 'நன்று! நீங்கள் செய்துவிட்டீர்கள். 🎉',
+      read: 'சத்தமாக வாசி', stop: 'வாசிப்பை நிறுத்து',
+      stuck: 'இன்னும் சிக்கலாக உள்ளது', again: 'மீண்டும் தொடங்கு', print: 'அச்சிடு',
+      allsteps: 'அனைத்து படிகளையும் பார்க்க', tip: 'குறிப்பு', warning: 'கவனம்',
+      privacy: 'உங்கள் கேள்வியும் ஸ்கிரீன்ஷாட்டும் பதிலளிக்க AI-க்கு அனுப்பப்படும். கடவுச்சொல், வங்கி விவரங்கள் அல்லது குறியீடுகளைப் பகிர வேண்டாம்.',
+      offline: 'நீங்கள் இணையத்தில் இல்லை. விரைவு உதவி இன்னும் வேலை செய்யும்.',
+      error: 'மன்னிக்கவும், ஏதோ தவறு நடந்தது. மீண்டும் முயலவும்.',
+      nomic: 'இந்த உலாவியில் குரல் உள்ளீடு இல்லை. தயவுசெய்து தட்டச்சு செய்யவும்.',
+      micerr: 'உங்கள் குரல் கேட்கவில்லை. மைக்ரோஃபோனை அனுமதிக்கவும், அல்லது தட்டச்சு செய்யவும்.',
+      nospeak: 'இந்த உலாவியில் சத்தமாக வாசிக்க முடியாது.',
+      needq: 'உங்கள் கேள்வியைத் தட்டச்சு செய்யவும் அல்லது பேசவும், அல்லது ஸ்கிரீன்ஷாட்டைச் சேர்க்கவும்.',
+      imgerr: 'மன்னிக்கவும், அந்தப் படத்தைத் திறக்க முடியவில்லை.',
+      builtin: 'உள்ளமைந்த வழிகாட்டி (ஆங்கிலத்தில்). உங்கள் திரை சற்று வேறுபடலாம். ஸ்கிரீன்ஷாட்டைச் சேர்த்தால் சரியான பொத்தானைக் காட்டுவேன்.',
+      check: 'என் திரையில் சரிபார்', install: 'செயலியை நிறுவு',
+      ios: 'iPhone-இல்: Share பொத்தானைத் தட்டி, "Add to Home Screen" தேர்வு செய்யவும்.',
+      clarify: 'எனக்கு இன்னும் கொஞ்சம் தெரிய வேண்டும்',
+      site: 'இணையதளம்', other: 'தொலைபேசி / மற்றவை',
+      smaller: 'சிறிய எழுத்து', bigger: 'பெரிய எழுத்து', language: 'மொழி'
+    }
+  };
+
+  var LANGS = {
+    en: { speech: 'en-MY', ai: 'English', html: 'en' },
+    ms: { speech: 'ms-MY', ai: 'Bahasa Malaysia', html: 'ms' },
+    zh: { speech: 'zh-CN', ai: 'Simplified Chinese', html: 'zh-CN' },
+    ta: { speech: 'ta-IN', ai: 'Tamil', html: 'ta' }
+  };
+
+  var TOOLS = [
+    { id: 'Zoom' }, { id: 'Microsoft Teams', label: 'Teams' }, { id: 'Google Meet' },
+    { id: 'PowerPoint' }, { id: 'Moodle' }, { id: 'Google Classroom' },
+    { id: 'A website', i18n: 'site' }, { id: 'Phone or other app', i18n: 'other' }
+  ];
+
+  /* ---------- Built-in guides (work with no internet, no AI) ---------- */
+  var QUICK = [
+    {
+      icon: '🖥️', tool: 'Zoom',
+      label: { en: 'Share my screen', ms: 'Kongsi skrin saya', zh: '共享我的屏幕', ta: 'என் திரையைப் பகிர' },
+      q: 'How do I share my screen with my class?',
+      steps: [
+        'Open your Zoom meeting.',
+        'Look at the bar at the bottom of the window and find the green button called "Share Screen".',
+        'Click it. A small window will ask what you want to show.',
+        'Click the window you want to show (for example your PowerPoint), then click "Share" at the bottom right.',
+        'To stop, click the red "Stop Share" button at the top of the screen.'
+      ],
+      tip: 'Open your PowerPoint file before you start sharing, so it is ready to pick.'
+    },
+    {
+      icon: '⏺️', tool: 'Zoom',
+      label: { en: 'Record the class', ms: 'Rakam kelas', zh: '录制课堂', ta: 'வகுப்பைப் பதிவு செய்' },
+      q: 'How do I record my Zoom class?',
+      steps: [
+        'Look at the bar at the bottom of your Zoom window and find "Record".',
+        'If you cannot see it, click "More" (three dots) and look for "Record" in the list.',
+        'Click "Record". A small recording sign appears at the top of the window.',
+        'When you finish, click "Stop Recording", or simply end the meeting.',
+        'Zoom saves the video after the meeting ends. Wait a moment for it to finish.'
+      ],
+      tip: 'If there is no Record button, your university may have switched it off. Ask their IT office.'
+    },
+    {
+      icon: '🔇', tool: 'Zoom',
+      label: { en: 'Mute students', ms: 'Senyapkan pelajar', zh: '让学生静音', ta: 'மாணவர்களை ஒலியடக்கு' },
+      q: 'How do I mute all the students in Zoom?',
+      steps: [
+        'Click "Participants" in the bar at the bottom. A list of people opens.',
+        'Find the "Mute All" button at the bottom of that list and click it.',
+        'If a box appears, click "Yes" or "Continue" to confirm.'
+      ],
+      tip: 'In that box you can untick "Allow participants to unmute themselves" if you want them to stay quiet.'
+    },
+    {
+      icon: '🔍', tool: 'A website',
+      label: { en: 'Make text bigger', ms: 'Besarkan tulisan', zh: '放大文字', ta: 'எழுத்தைப் பெரிதாக்கு' },
+      q: 'How do I make the text bigger on a web page?',
+      steps: [
+        'Click anywhere on the web page.',
+        'On Windows: hold the "Ctrl" key and press the "+" key. On a Mac: hold the "Cmd" key and press "+".',
+        'Press "+" again until the writing is big enough for you.',
+        'To make it smaller, hold the same key and press "-" instead.',
+        'To go back to normal size, hold Ctrl (or Cmd) and press "0".'
+      ],
+      tip: 'On a phone or tablet, put two fingers on the screen and slowly spread them apart.'
+    },
+    {
+      icon: '🛡️', tool: 'A website',
+      label: { en: 'Is this website safe?', ms: 'Adakah laman web ini selamat?', zh: '这个网站安全吗？', ta: 'இந்த இணையதளம் பாதுகாப்பானதா?' },
+      q: 'How can I tell if this website is safe?',
+      steps: [
+        'Look at the website address at the top. Read it slowly. Scam sites often change one letter, like "rn" instead of "m".',
+        'Be careful if you came from a message, email or pop-up. Close the page and type the official address yourself instead.',
+        'Never type your password, card number, or the code (OTP / TAC) sent to your phone on a page you are not sure about.',
+        'If someone is rushing you to pay or to "act now", stop. Ask a family member, or phone the organisation using the number on their official letter or card.'
+      ],
+      warning: 'A padlock symbol in the address bar does not mean a website is honest. Scam sites can have one too.'
+    },
+    {
+      icon: '🌐', tool: 'A website',
+      label: { en: 'Open a website', ms: 'Buka laman web', zh: '打开网站', ta: 'இணையதளத்தைத் திற' },
+      q: 'How do I open a website?',
+      steps: [
+        'Open your web browser (for example Chrome, Safari or Edge). It is the round or coloured icon you use for the internet.',
+        'Click the long white box at the very top of the window. This is the address bar.',
+        'Type the website address, for example www.google.com, then press the "Enter" key.',
+        'If you do not know the address, type what you are looking for in the same box and press "Enter" to search.'
+      ]
+    }
+  ];
+
+  /* ---------- Small helpers ---------- */
+  var FS = [18, 20, 23, 26, 30];
+  var store = {
+    get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) { /* ignore */ } }
+  };
+  var $ = function (id) { return document.getElementById(id); };
+
+  var state = {
+    lang: 'en', tool: '', image: null, history: [],
+    steps: [], idx: 0, finished: false, source: 'ai',
+    busy: false, autoRead: false, speaking: false, quick: null, fs: 1
+  };
+
+  function t(k) { return (I18N[state.lang] && I18N[state.lang][k]) || I18N.en[k] || k; }
+
+  var el = {
+    lang: $('lang'), chips: $('chips'), site: $('site'), ask: $('ask'), mic: $('mic'),
+    shot: $('shot'), file: $('file'), preview: $('preview'), prevImg: $('prev-img'), rmImg: $('rm-img'),
+    go: $('go'), quick: $('quick'), answer: $('answer'), title: $('ans-title'),
+    warn: $('warn'), warnText: $('warn-text'), askCard: $('ask-card'), askText: $('ask-text'),
+    stepsArea: $('steps-area'), stepNum: $('stepnum'), stepText: $('steptext'), dots: $('dots'),
+    back: $('back'), next: $('next'), read: $('read'), tip: $('tip'), tipText: $('tip-text'),
+    note: $('note'), all: $('all'), list: $('steplist'), stuck: $('stuck'), check: $('check'),
+    print: $('print'), again: $('again'), toast: $('toast'), net: $('net'), install: $('install'),
+    ios: $('ios-hint'), askSec: $('ask-sec'), quickSec: $('quick-sec')
+  };
+
+  var toastTimer;
+  function toast(msg) {
+    el.toast.textContent = msg;
+    el.toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.toast.classList.remove('show'); }, 5500);
+  }
+
+  /* ---------- Rendering ---------- */
+  function applyLang() {
+    document.documentElement.lang = LANGS[state.lang].html;
+    document.querySelectorAll('[data-i18n]').forEach(function (n) { n.textContent = t(n.dataset.i18n); });
+    document.querySelectorAll('[data-i18n-ph]').forEach(function (n) { n.placeholder = t(n.dataset.i18nPh); });
+    document.querySelectorAll('[data-i18n-aria]').forEach(function (n) { n.setAttribute('aria-label', t(n.dataset.i18nAria)); });
+    el.ask.placeholder = state.history.length ? t('ask_ph2') : t('ask_ph');
+    renderChips(); renderQuick(); renderControls();
+    if (state.steps.length) renderStep();
+    el.note.textContent = t('builtin');
+    el.ios.textContent = t('ios');
+    el.install.textContent = '⬇️ ' + t('install');
+    if (state.quick && state.source === 'builtin') {
+      el.title.textContent = state.quick.label[state.lang] || state.quick.label.en;
+    }
+  }
+
+  function renderChips() {
+    el.chips.textContent = '';
+    TOOLS.forEach(function (tool) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'chip';
+      b.setAttribute('role', 'radio');
+      b.setAttribute('aria-checked', String(state.tool === tool.id));
+      b.textContent = tool.i18n ? t(tool.i18n) : (tool.label || tool.id);
+      b.addEventListener('click', function () {
+        state.tool = state.tool === tool.id ? '' : tool.id;
+        renderChips();
+        if (state.tool === 'A website') el.site.focus();
+      });
+      el.chips.appendChild(b);
+    });
+  }
+
+  function renderQuick() {
+    el.quick.textContent = '';
+    QUICK.forEach(function (item) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'qbtn';
+      var ic = document.createElement('span'); ic.className = 'qicon'; ic.textContent = item.icon; ic.setAttribute('aria-hidden', 'true');
+      var lb = document.createElement('span'); lb.textContent = item.label[state.lang] || item.label.en;
+      b.appendChild(ic); b.appendChild(lb);
+      b.addEventListener('click', function () { showBuiltin(item); });
+      el.quick.appendChild(b);
+    });
+  }
+
+  function renderControls() {
+    el.back.textContent = '← ' + t('back');
+    var last = state.steps.length && state.idx === state.steps.length - 1;
+    el.next.textContent = (last ? '✔ ' + t('done') : t('next') + ' →');
+    el.read.textContent = state.speaking ? '⏹ ' + t('stop') : '🔊 ' + t('read');
+    el.stuck.textContent = t('stuck');
+    el.check.textContent = '📱 ' + t('check');
+    el.print.textContent = '🖨️ ' + t('print');
+    el.again.textContent = '↺ ' + t('again');
+    el.go.textContent = state.busy ? '' : t('help');
+    if (state.busy) {
+      var sp = document.createElement('span'); sp.className = 'spin'; sp.setAttribute('aria-hidden', 'true');
+      el.go.appendChild(sp); el.go.appendChild(document.createTextNode(' ' + t('working')));
+    }
+    setMicUI(!!rec);
+  }
+
+  function renderStep() {
+    var total = state.steps.length;
+    if (!total) return;
+    if (state.finished) {
+      el.stepNum.textContent = '';
+      el.stepText.textContent = t('welldone');
+    } else {
+      el.stepNum.textContent = t('step_of').replace('{n}', state.idx + 1).replace('{t}', total);
+      el.stepText.textContent = state.steps[state.idx];
+    }
+    el.dots.textContent = '';
+    for (var i = 0; i < total; i++) {
+      var d = document.createElement('span');
+      if (state.finished || i < state.idx) d.className = 'done';
+      else if (i === state.idx) d.className = 'now';
+      el.dots.appendChild(d);
+    }
+    el.back.disabled = (state.idx === 0 && !state.finished);
+    el.next.hidden = state.finished;
+    renderControls();
+  }
+
+  function showResult(r, source) {
+    state.source = source || 'ai';
+    state.steps = r.steps; state.idx = 0; state.finished = false;
+    el.title.textContent = r.title || '';
+    el.title.hidden = !r.title;
+    el.warn.hidden = !r.warning; el.warnText.textContent = r.warning || '';
+    el.tip.hidden = !r.tip; el.tipText.textContent = r.tip || '';
+    var clarify = !r.steps.length;
+    el.askCard.hidden = !clarify;
+    if (clarify) el.askText.textContent = r.ask || t('error');
+    el.stepsArea.hidden = clarify;
+    el.all.hidden = clarify;
+    el.all.open = false;
+    el.note.hidden = source !== 'builtin';
+    el.check.hidden = source !== 'builtin';
+    el.stuck.hidden = source === 'builtin';
+    el.list.textContent = '';
+    r.steps.forEach(function (s) { var li = document.createElement('li'); li.textContent = s; el.list.appendChild(li); });
+    el.answer.hidden = false;
+    renderStep(); renderControls();
+    el.answer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    try { el.answer.focus({ preventScroll: true }); } catch (e) { /* ignore */ }
+    if (state.autoRead && !clarify) speak(currentSpeech());
+  }
+
+  function showBuiltin(item) {
+    stopSpeaking();
+    state.quick = item;
+    showResult({
+      title: item.label[state.lang] || item.label.en,
+      steps: item.steps, tip: item.tip || '', warning: item.warning || '', ask: ''
+    }, 'builtin');
+  }
+
+  /* ---------- Speaking (text-to-speech) ---------- */
+  var speakToken = 0;
+  function currentSpeech() {
+    if (state.finished) return t('welldone');
+    return t('step_of').replace('{n}', state.idx + 1).replace('{t}', state.steps.length) + '. ' + state.steps[state.idx];
+  }
+  function speak(text) {
+    if (!('speechSynthesis' in window)) { toast(t('nospeak')); state.autoRead = false; return; }
+    var token = ++speakToken;
+    window.speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(text);
+    var code = LANGS[state.lang].speech;
+    u.lang = code; u.rate = 0.9;
+    var voices = window.speechSynthesis.getVoices() || [];
+    var v = voices.filter(function (x) { return x.lang && x.lang.toLowerCase().indexOf(code.slice(0, 2)) === 0; })[0];
+    if (v) u.voice = v;
+    u.onend = u.onerror = function () { if (token === speakToken) { state.speaking = false; renderControls(); } };
+    state.speaking = true; renderControls();
+    window.speechSynthesis.speak(u);
+  }
+  function stopSpeaking() {
+    speakToken++;
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    state.speaking = false; state.autoRead = false;
+    renderControls();
+  }
+  if ('speechSynthesis' in window) { window.speechSynthesis.onvoiceschanged = function () {}; }
+
+  /* ---------- Listening (speech-to-text) ---------- */
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var rec = null;
+  function setMicUI(on) {
+    el.mic.classList.toggle('listening', on);
+    el.mic.textContent = on ? '⏹ ' + t('mic_on') : '🎤 ' + t('mic');
+  }
+  function toggleMic() {
+    if (!SR) { toast(t('nomic')); return; }
+    if (rec) { rec.stop(); return; }
+    stopSpeaking();
+    var r = new SR();
+    var base = el.ask.value.trim();
+    base = base ? base + ' ' : '';
+    r.lang = LANGS[state.lang].speech;
+    r.interimResults = true; r.continuous = false;
+    r.onresult = function (e) {
+      var txt = '';
+      for (var i = 0; i < e.results.length; i++) txt += e.results[i][0].transcript;
+      el.ask.value = base + txt;
+    };
+    r.onerror = function (e) {
+      if (e.error && e.error !== 'aborted' && e.error !== 'no-speech') toast(t('micerr'));
+      else if (e.error === 'no-speech') toast(t('micerr'));
+    };
+    r.onend = function () { rec = null; setMicUI(false); };
+    rec = r;
+    try { r.start(); setMicUI(true); } catch (e) { rec = null; setMicUI(false); }
+  }
+
+  /* ---------- Screenshot handling ---------- */
+  function shrink(file, max) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        var w = img.naturalWidth, h = img.naturalHeight;
+        var s = Math.min(1, max / Math.max(w, h));
+        w = Math.max(1, Math.round(w * s)); h = Math.max(1, Math.round(h * s));
+        var c = document.createElement('canvas'); c.width = w; c.height = h;
+        var x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, w, h); x.drawImage(img, 0, 0, w, h);
+        var dataUrl = c.toDataURL('image/jpeg', 0.85);
+        URL.revokeObjectURL(url);
+        resolve({ dataUrl: dataUrl, b64: dataUrl.split(',')[1] });
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); reject(new Error('bad image')); };
+      img.src = url;
+    });
+  }
+  function loadImage(file) {
+    return shrink(file, 1600).then(function (r) {
+      state.image = r.b64; el.prevImg.src = r.dataUrl; el.preview.hidden = false;
+    }).catch(function () { toast(t('imgerr')); });
+  }
+  function clearImage() { state.image = null; el.prevImg.removeAttribute('src'); el.preview.hidden = true; }
+
+  /* ---------- Talking to the AI ---------- */
+  function parseAnswer(text) {
+    var obj = null;
+    try {
+      var s = text.indexOf('{'), e = text.lastIndexOf('}');
+      if (s >= 0 && e > s) obj = JSON.parse(text.slice(s, e + 1));
+    } catch (err) { obj = null; }
+    if (obj && typeof obj === 'object') {
+      return {
+        title: String(obj.title || ''),
+        steps: Array.isArray(obj.steps) ? obj.steps.map(String).filter(Boolean) : [],
+        tip: String(obj.tip || ''), warning: String(obj.warning || ''), ask: String(obj.ask || '')
+      };
+    }
+    var steps = String(text).split(/\n+/).map(function (l) {
+      return l.replace(/^\s*(?:\d+[.)]|[-*•])\s*/, '').trim();
+    }).filter(Boolean);
+    return { title: '', steps: steps, tip: '', warning: '', ask: '' };
+  }
+
+  function setBusy(b) { state.busy = b; el.go.disabled = b; el.go.setAttribute('aria-busy', String(b)); renderControls(); }
+
+  function submit() {
+    if (state.busy) return;
+    var q = el.ask.value.trim();
+    if (!q && !state.image) { toast(t('needq')); el.ask.focus(); return; }
+    if (!navigator.onLine) { toast(t('offline')); el.quickSec.scrollIntoView({ behavior: 'smooth' }); return; }
+    var question = q || 'Look at my screenshot. I am lost. What should I click next?';
+    var payload = {
+      language: LANGS[state.lang].ai,
+      tool: state.tool,
+      site: el.site.value.trim().slice(0, 200),
+      question: question,
+      history: state.history.slice(-6),
+      image: state.image ? { media_type: 'image/jpeg', data: state.image } : null
+    };
+    stopSpeaking();
+    if (rec) rec.stop();
+    setBusy(true);
+    fetch('api/chat', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+    }).then(function (res) {
+      return res.json().catch(function () { return {}; }).then(function (data) {
+        if (!res.ok || !data.text) throw new Error(data.error || ('HTTP ' + res.status));
+        return data;
+      });
+    }).then(function (data) {
+      var result = parseAnswer(data.text);
+      state.history.push({ role: 'user', text: question }, { role: 'assistant', text: data.text });
+      state.quick = null;
+      el.ask.value = ''; clearImage();
+      el.ask.placeholder = t('ask_ph2');
+      showResult(result, 'ai');
+    }).catch(function (err) {
+      var msg = String(err && err.message || '');
+      // Show friendly server messages (rate limit etc.); hide technical ones.
+      toast(/^(Too many|The AI)/.test(msg) ? msg : t('error'));
+    }).then(function () { setBusy(false); });
+  }
+
+  function startOver() {
+    stopSpeaking();
+    state.history = []; state.steps = []; state.quick = null;
+    el.answer.hidden = true; el.ask.value = ''; clearImage();
+    el.ask.placeholder = t('ask_ph');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ---------- Events ---------- */
+  el.go.addEventListener('click', submit);
+  el.ask.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && !e.shiftKey && !e.isComposing && e.keyCode !== 229) { e.preventDefault(); submit(); }
+  });
+  el.ask.addEventListener('paste', function (e) {
+    var files = (e.clipboardData && e.clipboardData.files) ? Array.prototype.slice.call(e.clipboardData.files) : [];
+    var f = files.filter(function (x) { return x.type.indexOf('image/') === 0; })[0];
+    if (f) { e.preventDefault(); loadImage(f); }
+  });
+  el.mic.addEventListener('click', toggleMic);
+  el.shot.addEventListener('click', function () { el.file.click(); });
+  el.file.addEventListener('change', function () {
+    var f = el.file.files && el.file.files[0];
+    if (f) loadImage(f);
+    el.file.value = '';
+  });
+  el.rmImg.addEventListener('click', clearImage);
+
+  el.next.addEventListener('click', function () {
+    if (state.finished) return;
+    if (state.idx < state.steps.length - 1) state.idx++; else state.finished = true;
+    renderStep();
+    if (state.autoRead) speak(currentSpeech());
+  });
+  el.back.addEventListener('click', function () {
+    if (state.finished) state.finished = false; else if (state.idx > 0) state.idx--;
+    renderStep();
+    if (state.autoRead) speak(currentSpeech());
+  });
+  el.read.addEventListener('click', function () {
+    if (state.speaking) { stopSpeaking(); return; }
+    state.autoRead = true; speak(currentSpeech());
+  });
+  el.stuck.addEventListener('click', function () {
+    el.ask.placeholder = t('ask_ph2');
+    el.askSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    el.ask.focus({ preventScroll: true });
+  });
+  el.check.addEventListener('click', function () {
+    var q = state.quick;
+    if (q) {
+      el.ask.value = q.q;
+      if (!state.tool) { state.tool = q.tool; renderChips(); }
+    }
+    el.askSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    el.shot.focus({ preventScroll: true });
+  });
+  el.print.addEventListener('click', function () { el.all.open = true; window.print(); });
+  window.addEventListener('beforeprint', function () { el.all.open = true; });
+  el.again.addEventListener('click', startOver);
+
+  el.lang.addEventListener('change', function () {
+    state.lang = el.lang.value; store.set('eg_lang', state.lang);
+    stopSpeaking(); if (rec) rec.stop();
+    applyLang();
+  });
+  function setFs(i) {
+    state.fs = Math.max(0, Math.min(FS.length - 1, i));
+    document.documentElement.style.fontSize = FS[state.fs] + 'px';
+    store.set('eg_fs', String(state.fs));
+  }
+  $('fs-up').addEventListener('click', function () { setFs(state.fs + 1); });
+  $('fs-down').addEventListener('click', function () { setFs(state.fs - 1); });
+
+  function updateNet() {
+    if (navigator.onLine) { el.net.hidden = true; }
+    else { el.net.textContent = t('offline'); el.net.hidden = false; }
+  }
+  window.addEventListener('online', updateNet);
+  window.addEventListener('offline', updateNet);
+
+  /* ---------- Install (PWA) ---------- */
+  var deferredInstall = null;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault(); deferredInstall = e; el.install.hidden = false;
+  });
+  el.install.addEventListener('click', function () {
+    if (!deferredInstall) return;
+    deferredInstall.prompt();
+    deferredInstall.userChoice.then(function () { deferredInstall = null; el.install.hidden = true; });
+  });
+  window.addEventListener('appinstalled', function () { el.install.hidden = true; });
+  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  var standalone = window.navigator.standalone || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+  if (isIOS && !standalone) el.ios.hidden = false;
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+  }
+
+  /* ---------- Start ---------- */
+  var savedLang = store.get('eg_lang');
+  var guess = (navigator.language || 'en').slice(0, 2).toLowerCase();
+  state.lang = LANGS[savedLang] ? savedLang : (LANGS[guess] ? guess : 'en');
+  el.lang.value = state.lang;
+  var fsSaved = store.get('eg_fs');
+  setFs(fsSaved !== null && FS[Number(fsSaved)] ? Number(fsSaved) : 1);
+  applyLang();
+  updateNet();
+})();
+</script>
+</body>
+</html>
